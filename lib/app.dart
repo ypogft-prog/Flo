@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             const Icon(Icons.location_on, color: Color(0xFFFF9500)),
             const SizedBox(width: 8),
-            Text('النجف الأشرف', style: TextStyle(color: Colors.white, fontSize: 16)),
+            const Text('النجف الأشرف', style: TextStyle(color: Colors.white, fontSize: 16)),
           ],
         ),
         actions: [
@@ -115,10 +115,10 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
-            // عنوان قائمة المطاعم المتاحة
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.between,
-              children: [
+            // عنوان قائمة المطاعم المتاحة بعد إصلاح خطأ MainAxisAlignment
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
                 Text('أقرب المطاعم المتاحة', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 Text('عرض الكل', style: TextStyle(color: Color(0xFF1AD1FF), fontSize: 14)),
               ],
@@ -163,15 +163,15 @@ class HomeScreen extends StatelessWidget {
           child: Icon(icon, color: isSelected ? Colors.white : const Color(0xFF1AD1FF), size: 28),
         ),
         const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: isSelected ? Colors.white : Colors.grey[400])),
+        Text(label, style: TextStyle(fontSize: 12, color: isSelected ? Colors.white : Colors.grey)),
       ],
     );
   }
 
-  // ودجت بطاقات عرض المطاعم المتاحة
+  // ودجت بطاقات عرض المطاعم المتاحة بعد إصلاح خطأ EdgeInsets
   Widget _buildRestaurantCard(String name, String time, String rating) {
     return Container(
-      margin: const EdgeInsets.bottom(16),
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFF111827),
