@@ -40,7 +40,15 @@ jobs:
             ! -name "*.zip" \
             -exec rm -rf {} +
 
-          cp -R "$PROJECT"/. .
+          find . -mindepth 1 -maxdepth 1 \
+  ! -name ".git" \
+  ! -name "*.zip" \
+  ! -name ".github" \
+  -exec rm -rf {} +
+
+find "$PROJECT" -mindepth 1 -maxdepth 1 \
+  ! -name ".github" \
+  -exec cp -R {} . \;
 
       - name: Commit FLO project
         run: |
