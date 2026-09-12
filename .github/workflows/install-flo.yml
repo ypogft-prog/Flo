@@ -35,20 +35,11 @@ jobs:
             exit 1
           fi
 
-          find . -mindepth 1 -maxdepth 1 \
-            ! -name ".git" \
-            ! -name "*.zip" \
-            -exec rm -rf {} +
+          # تنظيف المجلد الحالي مع الإبقاء على ملفات Git والـ Zip
+          find . -mindepth 1 -maxdepth 1 ! -name ".git" ! -name "*.zip" -exec rm -rf {} +
 
-          find . -mindepth 1 -maxdepth 1 \
-  ! -name ".git" \
-  ! -name "*.zip" \
-  ! -name ".github" \
-  -exec rm -rf {} +
-
-find "$PROJECT" -mindepth 1 -maxdepth 1 \
-  ! -name ".github" \
-  -exec cp -R {} . \;
+          # نقل محتويات المشروع المستخرج إلى المجلد الرئيسي
+          find "$PROJECT" -mindepth 1 -maxdepth 1 ! -name ".github" -exec cp -R {} . \;
 
       - name: Commit FLO project
         run: |
