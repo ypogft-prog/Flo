@@ -25,20 +25,18 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Find Project Directory and Build
+      - name: Recreate Android Folder and Build APK
         run: |
-          # البحث عن المجلد الذي يحتوي على ملف pubspec.yaml
-          PROJECT_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \; | head -n 1)
-          echo "Project directory found at: $PROJECT_DIR"
-          
-          # الانتقال إلى مجلد المشروع وتثبيت المكتبات
-          cd "$PROJECT_DIR"
+          # 1. تثبيت المكتبات الأساسية
           flutter pub get
           
-          # بناء الـ APK للـ Release
+          # 2. إعادة إنشاء مجلد الـ android والملفات الناقصة للمشروع تلقائياً
+          flutter create . --platforms=android
+          
+          # 3. بناء ملف الـ APK بعد توليد ملفات أندرويد
           flutter build apk --release
           
-          # إنشاء مجلد مؤقت لنقل الـ APK إليه حتى يسهل رفعه
+          # 4. إنشاء مجلد الإخراج ونقل التطبيق إليه
           mkdir -p $GITHUB_WORKSPACE/output-apk
           cp build/app/outputs/flutter-apk/app-release.apk $GITHUB_WORKSPACE/output-apk/
 
