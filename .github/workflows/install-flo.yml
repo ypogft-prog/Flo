@@ -25,14 +25,25 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Find Project Directory and Build
+        run: |
+          # البحث عن المجلد الذي يحتوي على ملف pubspec.yaml
+          PROJECT_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \; | head -n 1)
+          echo "Project directory found at: $PROJECT_DIR"
+          
+          # الانتقال إلى مجلد المشروع وتثبيت المكتبات
+          cd "$PROJECT_DIR"
+          flutter pub get
+          
+          # بناء الـ APK للـ Release
+          flutter build apk --release
+          
+          # إنشاء مجلد مؤقت لنقل الـ APK إليه حتى يسهل رفعه
+          mkdir -p $GITHUB_WORKSPACE/output-apk
+          cp build/app/outputs/flutter-apk/app-release.apk $GITHUB_WORKSPACE/output-apk/
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flo-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: output-apk/app-release.apk
