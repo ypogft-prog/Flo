@@ -21,7 +21,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ستة المرتبة حسب دورة حياة طلب الزبون
     final List<Widget> screens = [
       WelcomeScreen(onStart: () => _navigateTo(1)),
       HomeScreen(onSelectRestaurant: () => _navigateTo(2)),
@@ -82,7 +81,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 }
 
 // ==========================================
-// 1. شاشة البداية (Welcome Screen)
+// 1. شاشة البداية (Welcome Screen) المحدثة والمطابقة للتصميم
 // ==========================================
 class WelcomeScreen extends StatelessWidget {
   final VoidCallback onStart;
@@ -93,72 +92,159 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // 1. خلفية داكنة مع تدرج لوني خفيف من الأعلى للأسفل
           Container(
-            color: const Color(0xFF1E293B),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF0F172A),
+                  Color(0xFF090D16),
+                ],
+              ],
+            ),
+          ),
+          
+          // 2. صورة معالم النجف الأشرف المدمجة في أسفل النصف العلوي
+          Positioned(
+            bottom: MediaQuery.of(context).size.height * 0.15,
+            left: 0,
+            right: 0,
+            child: Opacity(
+              opacity: 0.35, // مدمجة مع الخلفية الداكنة بشكل متناسق
+              child: Image.network(
+                'https://images.unsplash.com/photo-1590075865003-e48277afd558?q=80&w=600&auto=format&fit=crop',
+                height: MediaQuery.of(context).size.height * 0.45,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // رسم معالم بديلة هندسية في حال عدم توفر اتصال بالإنترنت للأصول الخارجية
+                  return SizedBox(
+                    height: 200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: List.generate(5, (index) => Container(
+                        width: 30,
+                        height: 60.0 + (index * 25),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      )),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // 3. المحتوى والنصوص والشعارات مرتبة عمودياً بصورة مطابقة للـ UI المطلوبة
+          SafeArea(
             child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'FLOW',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF007AFF),
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'طلبك يمشي بسلاسة',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 54),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: 54,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF007AFF),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        shadowColor: Colors.black,
-                        elevation: 10,
-                      ),
-                      onPressed: onStart,
-                      child: const Text(
-                        'ابدأ الآن',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  const SizedBox(height: 40),
+                  
+                  // مجموعة الشعار والاسم والوصف
+                  Column(
                     children: [
-                      const Text(
-                        'لديك حساب؟ ',
-                        style: TextStyle(color: Colors.grey),
+                      // رسم الشعار المخصص (لوغو حرف F الانسيابي مع النقطة الصفراء) باستخدام CustomPaint
+                      SizedBox(
+                        width: 110,
+                        height: 110,
+                        child: CustomPaint(
+                          painter: FlowLogoPainter(),
+                        ),
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'دخول',
-                          style: TextStyle(
-                            color: Color(0xFF007AFF),
-                            fontWeight: FontWeight.bold,
-                          ),
+                      const SizedBox(height: 16),
+                      // كلمة FLOW بخط مائل عريض ولون أبيض
+                      const Text(
+                        'FLOW',
+                        style: TextStyle(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w900,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.white,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      // جملة الوصف مع تلوين كلمة فلو بالأزرق السماوي
+                      RichText(
+                        text: const TextSpan(
+                          style: TextStyle(fontSize: 16, fontFamily: 'Tahoma'),
+                          children: [
+                            TextSpan(
+                              text: 'فلو',
+                              style: TextStyle(
+                                color: Color(0xFF00C6FF),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '... طلبك يمشي بسلاسة.',
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                          ],
                         ),
                       ),
                     ],
+                  ),
+
+                  // مجموعة أزرار التحكم بالأسفل
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24.0),
+                    child: Column(
+                      children: [
+                        // زر ابدأ الآن الأزرق العريض الممتد بحواف دائرية ناعمة
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF007AFF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              elevation: 4,
+                            ),
+                            onPressed: onStart,
+                            child: const Text(
+                              'ابدأ الآن',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // نص تسجيل الدخول السفلي الملون
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'لديك حساب؟ ',
+                              style: TextStyle(color: Colors.white60, fontSize: 14),
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Text(
+                                'تسجيل الدخول',
+                                style: TextStyle(
+                                  color: Color(0xFF00C6FF),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -168,6 +254,52 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+// رسم شعار تطبيق FLOW المخصص لحرف الفاء الانسيابي مع النقطة المائلة
+class FlowLogoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paintBlue = Paint()
+      ..color = const Color(0xFF007AFF)
+      ..style = PaintingStyle.fill;
+
+    final paintSky = Paint()
+      ..color = const Color(0xFF00C6FF)
+      ..style = PaintingStyle.fill;
+
+    final paintYellow = Paint()
+      ..color = const Color(0xFFFFCC00)
+      ..style = PaintingStyle.fill;
+
+    // 1. رسم الجناح العلوي الكبير لحرف F
+    final pathTop = Path()
+      ..moveTo(size.width * 0.25, size.height * 0.25)
+      ..cubicTo(size.width * 0.5, size.height * 0.15, size.width * 0.85, size.height * 0.15, size.width * 0.95, size.height * 0.18)
+      ..cubicTo(size.width * 0.85, size.height * 0.35, size.width * 0.6, size.height * 0.4, size.width * 0.45, size.height * 0.42)
+      ..close();
+    canvas.drawPath(pathTop, paintBlue);
+
+    // 2. رسم الساق السفلية المائلة والمنحنية للانسيابية
+    final pathBottom = Path()
+      ..moveTo(size.width * 0.45, size.height * 0.42)
+      ..cubicTo(size.width * 0.35, size.height * 0.55, size.width * 0.3, size.height * 0.75, size.width * 0.35, size.height * 0.85)
+      ..cubicTo(size.width * 0.42, size.height * 0.75, size.width * 0.5, size.height * 0.55, size.width * 0.58, size.height * 0.43)
+      ..close();
+    canvas.drawPath(pathBottom, paintSky);
+
+    // 3. رسم النقطة الجانبية المائلة المميزة باللون الأصفر
+    final pathDot = Path()
+      ..moveTo(size.width * 0.12, size.height * 0.48)
+      ..lineTo(size.width * 0.25, size.height * 0.40)
+      ..lineTo(size.width * 0.30, size.height * 0.48)
+      ..lineTo(size.width * 0.17, size.height * 0.56)
+      ..close();
+    canvas.drawPath(pathDot, paintYellow);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // ==========================================
