@@ -1,23 +1,38 @@
-name: flo
-description: FLO - منصة التوصيل والخدمات المتكاملة
-publish_to: 'none'
-version: 1.0.0+1
+name: Build and Release FLO APK
 
-environment:
-  sdk: '>=3.5.0 <4.0.0'
+on:
+  workflow_dispatch:
 
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
+permissions:
+  contents: write
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-flutter:
-  uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/icons/
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flo-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
